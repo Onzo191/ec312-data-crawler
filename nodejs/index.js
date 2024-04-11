@@ -1,8 +1,10 @@
 require("dotenv").config();
-const { Builder, By, Key } = require("selenium-webdriver");
+const { Builder, By, Key, until } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
+const fs = require("fs");
+const csv = require("csv-parser");
 
-function setupDriver() {
+const setupDriver = () => {
   const options = new chrome.Options();
 
   const profilePath =
@@ -20,24 +22,84 @@ function setupDriver() {
   driver.manage().window().maximize();
 
   return driver;
-}
+};
 
-async function runBot() {
+const getProductUrls = async () => {
+  let driver = setupDriver();
+  let productUrls = [];
+  const keyWords = "Áo mưa";
+  // Số lượng sản phẩm muốn lấy
+  const numberOfProducts = 50;
+
   try {
-    let driver = setupDriver();
-    await driver.get("https://www.tiki.vn/");
-    await driver.sleep(3000);
+    for (let i = 1; productUrls.length <= numberOfProducts; i++) {
+      await driver.get(`https://tiki.vn/search?q=${keyWords}&page=${i}`);
+      await driver.wait(
+        until.elementLocated(
+          By.xpath('//a[@data-view-id="product_list_item"]')
+        ),
+        10000
+      );
 
-    await driver.quit();
+      // Lấy danh tất cả sản phẩm trong trang
+      let productElements = await driver.findElements(
+        By.className("product-item")
+      );
 
-    console.log("Test");
+      // Lấy url của từng sản phẩm và đẩy vào productUrls
+      for (const productElement of productElements) {
+        let url = await productElement.getAttribute("href");
+
+        productUrls.push({ url });
+      }
+    }
+
+    return productUrls;
   } catch (error) {
     console.error("An error occurred:", error);
+  } finally {
+    await driver.quit();
   }
-}
+};
 
-runBot()
-// module.exports = {
-//   runBot: runBot,
-// };
+const writeProductToCsv = async (productData) => {
+  const csvContent = `${productData.title},${productData.price},${productData.description}\n`;
+  await fs.appendFile(csvFilePath, csvContent, "utf8");
+};
 
+const getProductInformation = async (productUrl) => {
+  let driver = setupDriver();
+  let productData = {};
+
+  try {
+    await driver.get(productUrl);
+
+    // Extract product title (modify selectors as needed)
+    const titleElement = await driver.findElement(By.css(".title"));
+    productData.title = await titleElement.getText();
+
+    // Extract product price
+    const priceElement = await driver.findElement(By.css(".price"));
+    productData.price = await priceElement.getText();
+
+    // Extract product description (modify selectors as needed)
+    const descriptionElement = await driver.findElement(By.css(".description"));
+    productData.description = await descriptionElement.getText();
+
+    // Write extracted data to CSV
+    await writeProductToCsv(productData);
+  } catch (error) {
+    console.error(`Error processing product: ${productUrl}`, error);
+  } finally {
+    await driver.quit();
+  }
+};
+
+const csvFilePath = "tiki_product_urls.csv";
+(async () => {
+  const productUrls = await getProductUrls();
+
+  for (const product of productUrls) {
+    await getProductInformation(product.url);
+  }
+})();
