@@ -22,7 +22,7 @@ const fetchProductTiki = async (productIds) => {
   try {
     for (const [index, productId] of productIds.entries()) {
       //Delay 10s/50sp tránh bị giới hạn
-      delay(index);
+      await delay(index);
 
       const url = `https://tiki.vn/api/v2/products/${productId.id}?spid=${productId.spid}`;
 
@@ -73,7 +73,7 @@ const fetchProductSendo = async (productIds) => {
   try {
     for (const [index, productId] of productIds.entries()) {
       //Delay 10s/50sp tránh bị giới hạn
-      delay(index);
+      await delay(index);
 
       const url = `https://detail-api.sendo.vn/full/${productId.url}`;
       try {

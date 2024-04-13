@@ -11,6 +11,6 @@ const generateCsv = require("./src/generate-csv");
   
   const productData = await fetchProductSendo(productUrls);
 
-  const csvPath = "./data/sendo.csv"; // Path lưu csv
+  const csvPath = "./data/sendo-product.csv"; // Path lưu csv
   await generateCsv(csvPath, productData);
 })();
