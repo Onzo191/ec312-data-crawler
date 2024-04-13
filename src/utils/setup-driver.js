@@ -1,6 +1,5 @@
 const { Builder } = require("selenium-webdriver");
 const chrome = require("selenium-webdriver/chrome");
-require("dotenv").config();
 
 const setupDriver = () => {
   const options = new chrome.Options();
