@@ -1,9 +1,22 @@
 require("dotenv").config({ path: "src/config/.env" });
-const crawlerController = require("./src/controllers/crawler-controller");
+const express = require('express');
 
-(async () => {
-  const website = "sendo";
-  const keyWords = "Áo mưa, ô dù và phụ kiện đi mưa"; // Từ khóa cần tìm kiếm
-  const numberOfProducts = 50; // Số lượng sản phẩm muốn lấy
-  crawlerController(website, keyWords, numberOfProducts);
-})();
+const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/public', express.static('public'));
+
+// Import route
+const crawler = require("./src/routes/crawler");
+const download = require("./src/routes/download");
+
+app.use("/api/v1", crawler);
+app.use("/api/v1", download);
+
+// Deployment
+app.get("/", (req, res) => {
+  res.send("Server is Running! 🚀");
+});
+
+module.exports = app;

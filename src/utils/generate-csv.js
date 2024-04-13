@@ -1,11 +1,13 @@
 const { createObjectCsvWriter } = require("csv-writer");
+const getProjectDir = require("./get-project-directory");
 
-const generateCsv = (path, productData) => {
+const generateCsv = (productData) => {
   const timestamp = Date.now();
-  const newFilePath = `${path.replace(".csv", `-${timestamp}.csv`)}`;
+  const fileName = `product-${productData.length}-${timestamp}.csv`;
+  const filePath = `${getProjectDir()}\\src\\data\\${fileName}`;
 
   const csvWriter = createObjectCsvWriter({
-    path: newFilePath,
+    path: filePath,
     header: [
       { id: "sku", title: "SKU" },
       { id: "name", title: "Name" },
@@ -26,6 +28,8 @@ const generateCsv = (path, productData) => {
       )
     )
     .catch((error) => console.error("Error writing CSV:", error));
+
+  return fileName;
 };
 
 module.exports = generateCsv;
