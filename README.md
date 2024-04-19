@@ -1,5 +1,6 @@
 # Data Crawler với Selenium, NodeJS
 **Một sản phẩm để đời với mục tiêu kiếm điểm cộng của nhúm 7.**
+**Link dự án:** [ec312-data-crawler](https://github.com/Onzo191/ec312-data-crawler/).
 
 ## Các thư viện sử dụng
 * Selenium
