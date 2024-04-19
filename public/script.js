@@ -5,6 +5,7 @@ $(document).ready(function () {
       e.preventDefault();
 
       $("#processing").html("<h3>Processing...</h3>");
+      $("#downloadButton").hide();
 
       $.ajax({
           url: "http://localhost:4000/api/v1/crawler",

@@ -16,11 +16,13 @@ const delay = async (index, interations = 50, time = 10000) => {
   }
 };
 
-const fetchProductTiki = async (productIds) => {
+const fetchProductTiki = async (productIds, numberOfProducts) => {
   let productData = [];
 
   try {
     for (const [index, productId] of productIds.entries()) {
+      if (productData.length == numberOfProducts) break;
+
       //Delay 10s/50sp tránh bị giới hạn
       await delay(index);
 
@@ -67,11 +69,13 @@ const fetchProductTiki = async (productIds) => {
   }
 };
 
-const fetchProductSendo = async (productIds) => {
+const fetchProductSendo = async (productIds, numberOfProducts) => {
   let productData = [];
 
   try {
     for (const [index, productId] of productIds.entries()) {
+      if (productData.length == numberOfProducts) break;
+      
       //Delay 10s/50sp tránh bị giới hạn
       await delay(index);
 

@@ -32,10 +32,10 @@ const crawlingData = async (website, keyword, quantity) => {
 
   if (website === "sendo") {
     const productUrls = await getProductUrls(driver, keyword, quantity);
-    productData = await fetchProductSendo(productUrls);
+    productData = await fetchProductSendo(productUrls, quantity);
   } else if (website === "tiki") {
     const productIds = await getProductIds(driver, keyword, quantity);
-    productData = await fetchProductTiki(productIds);
+    productData = await fetchProductTiki(productIds, quantity);
   } else {
     throw new Error("Website không được hỗ trợ");
   }
